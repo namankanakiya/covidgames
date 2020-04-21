@@ -2,18 +2,21 @@ import { Component } from "react";
 import io from "socket.io-client";
 import fetch from "isomorphic-fetch";
 import { Box, Container, Heading, Label, Input, Button } from "theme-ui";
-
-import CTA from "../components/cta";
+import theme from "../lib/theme";
 
 export default class InputForm extends Component {
   state = {
     username: "",
     currentUsers: [],
+    submittedUsername: "",
+    usernameRejected: false,
   };
 
   componentDidMount() {
-    this.socket = io("/test");
+    this.socket = io(this.props.namespace);
     this.socket.on("connectedUsers", this.handleCurrentUsers);
+    this.socket.on("acceptedUser", this.handleAcceptedUser);
+    this.socket.on("rejectedUser", this.handleRejectedUser);
     console.log("getting server");
     fetch("/users")
       .then((value) => {
@@ -34,6 +37,14 @@ export default class InputForm extends Component {
     this.setState({ currentUsers: users });
   };
 
+  handleAcceptedUser = (user) => {
+    this.setState({ submittedUsername: user });
+  };
+
+  handleRejectedUser = () => {
+    this.setState({ usernameRejected: true });
+  };
+
   handleSubmit = (event) => {
     event.preventDefault();
 
@@ -44,56 +55,92 @@ export default class InputForm extends Component {
   };
 
   handleChange = (event) => {
-    this.setState({ username: event.target.value });
+    this.setState({ username: event.target.value, usernameRejected: false });
   };
 
   render() {
     return (
       <>
-        <Box
-          as="form"
-          sx={{ bg: "sheet", py: [4, 5] }}
-          onSubmit={this.handleSubmit}
-        >
-          <Container
+        {!(this.state.submittedUsername.length > 0) && (
+          <Box
+            as="form"
+            sx={{ py: [4, 5], color: "primary" }}
+            onSubmit={this.handleSubmit}
+          >
+            <Container
+              sx={{
+                position: "relative",
+                strong: { color: "accent" },
+                "> p": { fontSize: [2, 3], maxWidth: "copyPlus", my: [2, 3] },
+              }}
+            >
+              <Heading
+                sx={{
+                  variant: "text.subheadline",
+                  fontSize: [3, 4],
+                  color: "secondary",
+                }}
+              >
+                Enter Game
+              </Heading>
+              <Label htmlFor="username">Username</Label>
+              <Input
+                name="username"
+                mb={3}
+                onChange={this.handleChange}
+                value={this.state.username}
+                sx={{
+                  backgroundColor: this.state.usernameRejected ? "red" : null,
+                }}
+              />
+              {this.state.usernameRejected && (
+                <Label sx={{ color: "red", marginTop: "-15px", mb: "15px" }}>
+                  That username is taken, please choose another
+                </Label>
+              )}
+              <Button>Submit</Button>
+            </Container>
+          </Box>
+        )}
+        <Container sx={{ pb: [4, null, 5] }}>
+          {(this.state.currentUsers.length > 0 ||
+            this.state.submittedUsername.length > 0) && (
+            <Heading
+              sx={{
+                variant: "text.subheadline",
+                fontSize: [3, 4],
+                color: "secondary",
+              }}
+            >
+              Current Players
+            </Heading>
+          )}
+          <Box
+            as="ul"
+            variant="list"
             sx={{
-              position: "relative",
-              strong: { color: "accent" },
-              "> p": { fontSize: [2, 3], maxWidth: "copyPlus", my: [2, 3] },
+              ret: {
+                display: "inline-block",
+                fontFamily: "inherit",
+                color: theme.colors.primary,
+              },
             }}
           >
-            <Heading sx={{ variant: "text.title", fontSize: [4, 5] }}>
-              Enter Game
-            </Heading>
-            <Label htmlFor="username">Username</Label>
-            <Input
-              name="username"
-              mb={3}
-              onChange={this.handleChange}
-              value={this.state.username}
-            />
-            <Button>Submit</Button>
-          </Container>
-        </Box>
-        <Container
-          id="currentUsers"
-          as="article"
-          sx={{ py: [3, 4], mt: [3, 4], mb: [5, 6] }}
-        >
-          <Heading sx={{ variant: "text.title", fontSize: [4, 5] }}>
-            Current users
-          </Heading>
-          <ul>
+            {this.state.submittedUsername &&
+              this.state.submittedUsername.length > 0 && (
+                <ret>
+                  <li key={this.state.submittedUsername}>
+                    {this.state.submittedUsername}
+                  </li>
+                </ret>
+              )}
             {this.state.currentUsers &&
               this.state.currentUsers.map((user) => {
-                return <li key={user}>{user}</li>;
+                return user === this.state.submittedUsername ? null : (
+                  <li key={user}>{user}</li>
+                );
               })}
-          </ul>
-          <CTA
-            primary={["/judges", "Meet the judges"]}
-            secondary={["/projects", "See all projects"]}
-            sx={{ mt: [3, 4] }}
-          />
+          </Box>
         </Container>
       </>
     );

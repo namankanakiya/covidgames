@@ -11,8 +11,8 @@ const nextHandler = nextApp.getRequestHandler();
 var users = {};
 
 // socket.io server for test
-const testNsp = io.of("/test");
-testNsp.on("connection", (socket) => {
+const chameleon = io.of("/chameleon");
+chameleon.on("connection", (socket) => {
   console.log("someone connected");
   socket.on("user", (data) => {
     console.log(data);
@@ -22,8 +22,11 @@ testNsp.on("connection", (socket) => {
       users[socket.id] = data;
       console.log(data);
       console.log(users);
+      socket.emit("acceptedUser", data);
       socket.emit("connectedUsers", Object.values(users));
       socket.broadcast.emit("connectedUsers", Object.values(users));
+    } else {
+      socket.emit("rejectedUser");
     }
   });
 

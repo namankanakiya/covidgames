@@ -1,11 +1,11 @@
-import Head from 'next/head'
-import theme from '../lib/theme'
+import Head from "next/head";
+import theme from "../lib/theme";
 
 export default ({
-  title = 'COVID-19 Global Hackathon',
-  description = 'The #BuildforCOVID19 Global Online Hackathon was an opportunity for developers around the world to tackle challenges related to the coronavirus (COVID-19) pandemic in March/April 2020. Expert judges from the health, science and technology fields selected the following highlighted projects.',
-  image = 'https://covidglobalhackathon.com/card.png',
-  url = 'https://covidglobalhackathon.com/'
+  title = "COVID-19 Games",
+  description = "The Games which I've had time to develop during COVID",
+  image = "http://localhost:3000/",
+  url = "http://localhost:3000/",
 }) => (
   <Head>
     <title>{title}</title>
@@ -18,7 +18,6 @@ export default ({
     <meta property="og:description" content={description} />
     <meta name="twitter:description" content={description} />
     <meta property="og:image" content={image} />
-    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={image} />
     <link
       rel="apple-touch-icon"
@@ -46,4 +45,4 @@ export default ({
     <meta name="msapplication-TileColor" content={theme.colors.primary} />
     <meta name="theme-color" content={theme.colors.primary} />
   </Head>
-)
+);
