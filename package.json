@@ -7,7 +7,7 @@
   "scripts": {
     "dl": "node lib/download.js",
     "dev": "node server.js",
-    "build": "yarn run dl && next build",
+    "build": "next build",
     "start": "node server.js"
   },
   "dependencies": {
