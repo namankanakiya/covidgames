@@ -19,8 +19,8 @@ export default class Index extends Component {
             Games
           </Heading>
           <CTA
-            primary={["/projects", "See all games"]}
-            secondary={["/chameleon", "Play Chameleon"]}
+            // primary={["/projects", "See all games"]}
+            primary={["/chameleon", "Play Chameleon"]}
             sx={{ mt: [3, 4] }}
           />
         </Container>

@@ -5,91 +5,91 @@ import {
   Image,
   NavLink,
   Text,
-  useColorMode
-} from 'theme-ui'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { ArrowLeft, Moon } from 'react-feather'
+  useColorMode,
+} from "theme-ui";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { ArrowLeft, Moon } from "react-feather";
 
 const linkEffect = {
   fontSize: 1,
-  borderRadius: 'circle',
-  transition: 'box-shadow .125s ease-in-out',
-  ':hover,:focus': {
-    color: 'blue',
-    boxShadow: '0 0 0 2px',
-    outline: 'none'
-  }
-}
+  borderRadius: "circle",
+  transition: "box-shadow .125s ease-in-out",
+  ":hover,:focus": {
+    color: "blue",
+    boxShadow: "0 0 0 2px",
+    outline: "none",
+  },
+};
 
 const NavButton = ({ sx, ...props }) => (
   <IconButton
     {...props}
     sx={{
       ...linkEffect,
-      display: 'inline-flex',
-      alignItems: 'flex-end',
-      width: 'auto',
-      svg: { stroke: 'currentColor' },
-      ...sx
+      display: "inline-flex",
+      alignItems: "flex-end",
+      width: "auto",
+      svg: { stroke: "currentColor" },
+      ...sx,
     }}
   />
-)
+);
 
-const BackButton = ({ to = '/', text = 'Back' }) => (
+const BackButton = ({ to = "/", text = "Back" }) => (
   <Link href={to} passHref>
     <NavButton
       as="a"
-      title={to === '/' ? 'Back to homepage' : 'Back'}
-      sx={{ color: 'primary', pr: 2, svg: { mr: 2 } }}
+      title={to === "/" ? "Back to homepage" : "Back"}
+      sx={{ color: "primary", pr: 2, svg: { mr: 2 } }}
     >
       <ArrowLeft />
       {text}
     </NavButton>
   </Link>
-)
+);
 
-export const ColorSwitcher = props => {
-  const [mode, setMode] = useColorMode()
+export const ColorSwitcher = (props) => {
+  const [mode, setMode] = useColorMode();
   return (
     <NavButton
       {...props}
-      onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')}
-      sx={{ color: 'secondary', ml: 'auto', ...props.sx }}
+      onClick={() => setMode(mode === "dark" ? "light" : "dark")}
+      sx={{ color: "secondary", ml: "auto", ...props.sx }}
       title="Reverse color scheme"
     >
       <Moon size={24} />
     </NavButton>
-  )
-}
+  );
+};
 
 export default ({}) => {
-  const { pathname } = useRouter()
-  const home = pathname === '/'
-  if (home) return null
-  const [mode] = useColorMode()
+  const { pathname } = useRouter();
+  const home = pathname === "/";
+  if (home) return null;
+  const [mode] = useColorMode();
   return (
-    <Box as="nav" colorMode={mode} sx={{ bg: 'sheet', py: 3, zIndex: 4 }}>
+    <Box as="nav" colorMode={mode} sx={{ bg: "sheet", py: 3, zIndex: 4 }}>
       <Container
         sx={{
-          display: 'flex',
-          alignItems: 'center',
+          display: "flex",
+          alignItems: "center",
           a: {
-            color: 'secondary',
-            textDecoration: 'none',
-            mr: [3, 4]
-          }
+            color: "secondary",
+            textDecoration: "none",
+            mr: [3, 4],
+          },
         }}
       >
         <Link href="/" passHref>
           <NavLink
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              color: 'secondary',
-              textTransform: 'uppercase',
+              display: "flex",
+              alignItems: "center",
+              color: "secondary",
+              textTransform: "uppercase",
               fontSize: [1, 2],
-              fontWeight: 'bold'
+              fontWeight: "bold",
             }}
           >
             <Image src="/icon-flat.svg" width={64} sx={{ mr: 3 }} />
@@ -97,17 +97,14 @@ export default ({}) => {
           </NavLink>
         </Link>
         <Link
-          href={home ? '/#projects' : '/projects'}
+          href={home ? "/#chameleon" : "/chameleon"}
           prefetch={false}
           passHref
         >
-          <NavLink sx={{ ...linkEffect, px: 2, py: 1 }}>Projects</NavLink>
-        </Link>
-        <Link href="/judges" passHref>
-          <NavLink sx={{ ...linkEffect, px: 2, py: 1 }}>Judges</NavLink>
+          <NavLink sx={{ ...linkEffect, px: 2, py: 1 }}>Chameleon</NavLink>
         </Link>
         <ColorSwitcher />
       </Container>
     </Box>
-  )
-}
+  );
+};

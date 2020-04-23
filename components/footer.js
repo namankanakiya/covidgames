@@ -1,37 +1,35 @@
-import { Box, Container } from 'theme-ui'
-import Flag from './flag'
-import Content from './footer.mdx'
+import { Box, Container } from "theme-ui";
+import Content from "./footer.mdx";
 
 export default () => (
   <Box
     as="footer"
     sx={{
       py: 5,
-      bg: 'sunken',
-      color: 'secondary',
-      textAlign: 'center',
+      bg: "sunken",
+      color: "secondary",
+      textAlign: "center",
       fontSize: 1,
-      position: 'relative'
+      position: "relative",
     }}
   >
-    <Flag />
     <Container
       variant="narrow"
       sx={{
         p: { mt: 3 },
-        a: { color: 'primary' },
+        a: { color: "primary" },
         h2: {
-          fontFamily: 'heading',
-          letterSpacing: 'headline',
-          lineHeight: 'heading',
-          color: 'secondary',
+          fontFamily: "heading",
+          letterSpacing: "headline",
+          lineHeight: "heading",
+          color: "secondary",
           fontSize: [3, 4],
           mt: 0,
-          mb: -2
-        }
+          mb: -2,
+        },
       }}
     >
       <Content />
     </Container>
   </Box>
-)
+);
