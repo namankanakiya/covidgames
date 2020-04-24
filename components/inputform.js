@@ -14,6 +14,8 @@ export default class InputForm extends Component {
     chameleonAssigned: false,
     gridAssigned: "",
     order: -1,
+    disconnected: false,
+    gameStartedOthers: false,
   };
 
   componentDidMount() {
@@ -27,6 +29,7 @@ export default class InputForm extends Component {
     this.socket.on("assignedGrid", this.handleAssignedGrid);
     this.socket.on("assignedChameleon", this.handleAssignedChameleon);
     this.socket.on("resetGame", this.handleResetGameConfirmed);
+    this.socket.on("disconnect", this.handleDisconnect);
     console.log("getting server");
     fetch("/users")
       .then((value) => {
@@ -42,6 +45,13 @@ export default class InputForm extends Component {
     this.socket.off("connectedUsers", this.handleCurrentUsers);
     this.socket.close();
   }
+
+  handleDisconnect = () => {
+    this.setState({ disconnected: true });
+    if (this.state.username.length > 0) {
+      this.socket.emit("user", this.state.username);
+    }
+  };
 
   handleAssignedChameleon = (order) => {
     this.setState({ chameleonAssigned: true, order: order });
@@ -61,6 +71,7 @@ export default class InputForm extends Component {
     if (this.state.allowStartGame) {
       this.setState({ allowStartGame: false });
     }
+    this.handleResetGameConfirmed();
   };
 
   handleLeftGame = (user) => {
@@ -72,7 +83,7 @@ export default class InputForm extends Component {
   };
 
   handleAcceptedUser = (user) => {
-    this.setState({ submittedUsername: user });
+    this.setState({ submittedUsername: user[0], gameStartedOthers: user[1] });
   };
 
   handleRejectedUser = () => {
@@ -105,7 +116,13 @@ export default class InputForm extends Component {
   };
 
   handleResetGameConfirmed = () => {
-    this.setState({ chameleonAssigned: false, gridAssigned: "", order: -1 });
+    this.setState({
+      chameleonAssigned: false,
+      gridAssigned: "",
+      order: -1,
+      disconnected: false,
+      gameStartedOthers: false,
+    });
   };
 
   isGameStarted = () => {
@@ -203,18 +220,22 @@ export default class InputForm extends Component {
             this.state.submittedUsername &&
             this.state.submittedUsername.length > 0 && (
               <Container sx={{ my: "10px" }}>
-                <Box>
-                  <Box as="ul" variant="list" sx={{ display: "flex" }}>
-                    {this.state.allowStartGame && (
-                      <Button
-                        onClick={this.handleStartGame}
-                        sx={{ marginRight: "10px" }}
-                      >
-                        Start Game
-                      </Button>
+                <Box as="ul" variant="list" sx={{ display: "flex" }}>
+                  {this.state.allowStartGame &&
+                    !this.state.gameStartedOthers && (
+                      <Button onClick={this.handleStartGame}>Start Game</Button>
                     )}
-                    <Button onClick={this.handleLeaveGame}>Leave Game</Button>
-                  </Box>
+                  {this.state.gameStartedOthers && (
+                    <div>
+                      <p>Others playing, please wait</p>
+                    </div>
+                  )}
+                  <Button
+                    onClick={this.handleLeaveGame}
+                    sx={{ marginLeft: "10px" }}
+                  >
+                    Leave Game
+                  </Button>
                 </Box>
               </Container>
             )}

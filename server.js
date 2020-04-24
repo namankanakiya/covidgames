@@ -20,6 +20,7 @@ const NUMBERUSERSCHAMELEON = 3;
 var users = {};
 var letters = ["A", "B", "C", "D"];
 var numbersChameleon = ["1", "2", "3", "4"];
+var gameStarted = false;
 
 // socket.io server for test
 const chameleon = io.of("/chameleon");
@@ -33,7 +34,7 @@ chameleon.on("connection", (socket) => {
       users[socket.id] = data;
       console.log(data);
       console.log(users);
-      socket.emit("acceptedUser", data);
+      socket.emit("acceptedUser", [data, gameStarted]);
       var objectVals = Object.values(users);
       socket.emit("connectedUsers", objectVals);
       socket.broadcast.emit("connectedUsers", objectVals);
@@ -87,9 +88,11 @@ chameleon.on("connection", (socket) => {
     chameleon
       .to(chosenChamaleonSocket)
       .emit("assignedChameleon", chameleonIndex + 1);
+    gameStarted = true;
   });
 
   socket.on("resetGame", () => {
+    gameStarted = false;
     chameleon.emit("resetGame");
   });
 
@@ -98,6 +101,8 @@ chameleon.on("connection", (socket) => {
     var objectVals = Object.values(users);
     socket.broadcast.emit("connectedUsers", objectVals);
     if (objectVals.length < NUMBERUSERSCHAMELEON) {
+      gameStarted = false;
+      console.log("game not started");
       socket.broadcast.emit("denyStartGame");
     }
     console.log(Object.values(users));
