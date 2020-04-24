@@ -2,7 +2,7 @@ import { Box, Container } from "theme-ui";
 
 import InputForm from "../components/inputform";
 
-export default ({ judges }) => (
+export default ({}) => (
   <>
     <Box as="header" variant="headerLeft">
       <Container>

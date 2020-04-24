@@ -68,24 +68,35 @@ chameleon.on("connection", (socket) => {
   });
 
   socket.on("startGame", () => {
-    var keys = Object.keys(users);
-    var chosenChamaleonSocket = keys[(keys.length * Math.random()) << 0];
+    var socketIds = Object.keys(users);
+    shuffle(socketIds);
+    var chosenChamaleonSocket =
+      socketIds[(socketIds.length * Math.random()) << 0];
     var randomLetter = letters[(letters.length * Math.random()) << 0];
     var randomNumber =
       numbersChameleon[(numbersChameleon.length * Math.random()) << 0];
     var randomGrid = randomLetter + randomNumber;
-    for (var socketId in users) {
+    var chameleonIndex = 0;
+    socketIds.forEach((socketId, index) => {
       if (socketId !== chosenChamaleonSocket) {
-        chameleon.to(socketId).emit("assignedGrid", randomGrid);
+        chameleon.to(socketId).emit("assignedGrid", [randomGrid, index + 1]);
+      } else {
+        chameleonIndex = index;
       }
-    }
-    chameleon.to(chosenChamaleonSocket).emit("assignedChameleon");
+    });
+    chameleon
+      .to(chosenChamaleonSocket)
+      .emit("assignedChameleon", chameleonIndex + 1);
+  });
+
+  socket.on("resetGame", () => {
+    chameleon.emit("resetGame");
   });
 
   socket.on("disconnect", function () {
     delete users[socket.id];
     var objectVals = Object.values(users);
-    socket.broadcast.emit("connectedUsers");
+    socket.broadcast.emit("connectedUsers", objectVals);
     if (objectVals.length < NUMBERUSERSCHAMELEON) {
       socket.broadcast.emit("denyStartGame");
     }
@@ -108,3 +119,22 @@ nextApp.prepare().then(() => {
     console.log(`> Ready on http://localhost:${process.env.PORT || 3000}`);
   });
 });
+
+var shuffle = function (array) {
+  var currentIndex = array.length;
+  var temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+};

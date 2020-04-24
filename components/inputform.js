@@ -13,6 +13,7 @@ export default class InputForm extends Component {
     allowStartGame: false,
     chameleonAssigned: false,
     gridAssigned: "",
+    order: -1,
   };
 
   componentDidMount() {
@@ -25,6 +26,7 @@ export default class InputForm extends Component {
     this.socket.on("denyStartGame", this.handleDenyStartGame);
     this.socket.on("assignedGrid", this.handleAssignedGrid);
     this.socket.on("assignedChameleon", this.handleAssignedChameleon);
+    this.socket.on("resetGame", this.handleResetGameConfirmed);
     console.log("getting server");
     fetch("/users")
       .then((value) => {
@@ -41,12 +43,12 @@ export default class InputForm extends Component {
     this.socket.close();
   }
 
-  handleAssignedChameleon = () => {
-    this.setState({ chameleonAssigned: true });
+  handleAssignedChameleon = (order) => {
+    this.setState({ chameleonAssigned: true, order: order });
   };
 
   handleAssignedGrid = (grid) => {
-    this.setState({ gridAssigned: grid });
+    this.setState({ gridAssigned: grid[0], order: grid[1] });
   };
 
   handleAllowStartGame = () => {
@@ -96,6 +98,14 @@ export default class InputForm extends Component {
 
   handleStartGame = () => {
     this.socket.emit("startGame");
+  };
+
+  handleResetGame = () => {
+    this.socket.emit("resetGame");
+  };
+
+  handleResetGameConfirmed = () => {
+    this.setState({ chameleonAssigned: false, gridAssigned: "", order: -1 });
   };
 
   isGameStarted = () => {
@@ -212,11 +222,14 @@ export default class InputForm extends Component {
             <Container>
               <Box>
                 {this.state.chameleonAssigned && <h1>You are the chameleon</h1>}
+                {this.state.gridAssigned &&
+                  this.state.gridAssigned.length > 0 && (
+                    <h1>{this.state.gridAssigned}</h1>
+                  )}
+                {this.state.order > 0 && <h1>Position: {this.state.order}</h1>}
+                <Button onClick={this.handleResetGame}>Reset Game</Button>
               </Box>
             </Container>
-          )}
-          {this.state.gridAssigned && this.state.gridAssigned.length > 0 && (
-            <h1>{this.state.gridAssigned}</h1>
           )}
         </Container>
       </>
