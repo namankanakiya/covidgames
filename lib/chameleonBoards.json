@@ -19,5 +19,89 @@
       "Carpenter",
       "Butcher"
     ]
+  },
+  {
+    "name": "Childrens Books",
+    "words": [
+      "The Hobbit",
+      "Peter Pan",
+      "The Very Hungry Caterpillar",
+      "101 Dalmations",
+      "Matilda",
+      "Harry Potter and the Sorcerers Stone",
+      "Alice in Wonderland",
+      "The Lion, Witch and the Wardrobe",
+      "Sherlock Holmes",
+      "Cat in the Hat",
+      "Charlie and the Chocolate Factory",
+      "Where the Wild things are",
+      "Winnie the Pooh",
+      "Series of Unfortunate Events",
+      "Jungle Book",
+      "Charlotte's Web"
+    ]
+  },
+  {
+    "name": "Under the Sea",
+    "words": [
+      "Octopus",
+      "Starfish",
+      "Shark",
+      "Jellyfish",
+      "Lobster",
+      "Seal",
+      "Dolphin",
+      "Killer Whale",
+      "Crab",
+      "Giant Squid",
+      "Seahorse",
+      "Sting Ray",
+      "Sea Turtle",
+      "Clownfish",
+      "Swordfish",
+      "Mermaid"
+    ]
+  },
+  {
+    "name": "Transport",
+    "words": [
+      "Plane",
+      "Car",
+      "Tank",
+      "Helicopter",
+      "Cruise Ship",
+      "Motorbike",
+      "Hovercraft",
+      "Bus",
+      "Segway",
+      "Cable Car",
+      "Jet Ski",
+      "Broomstick",
+      "Hot Air Balloon",
+      "Magic Carpet",
+      "Train",
+      "Spaceship"
+    ]
+  },
+  {
+    "name": "Fairy Tales",
+    "words": [
+      "Cinderella",
+      "Goldilocks",
+      "Jack and the Bean Stalk",
+      "Tortoise and the Hare",
+      "Snow White",
+      "Rapunzel",
+      "Aladdin",
+      "Princess and the Pea",
+      "Peter Pan",
+      "Little Red Riding Hood",
+      "Pinocchio",
+      "Beauty and the Beast",
+      "Sleeping Beauty",
+      "Hansel and Gretel",
+      "Gignerbread Man",
+      "3 Little Pigs"
+    ]
   }
 ]

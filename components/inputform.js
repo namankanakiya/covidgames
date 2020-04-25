@@ -3,6 +3,7 @@ import io from "socket.io-client";
 import fetch from "isomorphic-fetch";
 import { Box, Container, Heading, Label, Input, Button } from "theme-ui";
 import theme from "../lib/theme";
+import ChameleonSelect from "../pages/chameleonBoard";
 
 export default class InputForm extends Component {
   state = {
@@ -15,7 +16,7 @@ export default class InputForm extends Component {
     gridAssigned: "",
     order: -1,
     gameStartedOthers: false,
-    disconnected: false,
+    disconnected: "",
   };
 
   componentDidMount() {
@@ -59,7 +60,7 @@ export default class InputForm extends Component {
       gridAssigned: "",
       order: -1,
       gameStartedOthers: false,
-      disconnected: true,
+      disconnected: "true",
     });
   };
 
@@ -131,7 +132,7 @@ export default class InputForm extends Component {
       gridAssigned: "",
       order: -1,
       gameStartedOthers: false,
-      disconnected: false,
+      disconnected: "",
     });
   };
 
@@ -272,6 +273,7 @@ export default class InputForm extends Component {
               {this.state.order > 0 && <h1>Position: {this.state.order}</h1>}>
             </div>
           )}
+          <ChameleonSelect />
         </Container>
       </>
     );

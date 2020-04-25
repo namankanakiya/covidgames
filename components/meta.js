@@ -44,5 +44,11 @@ export default ({
     />
     <meta name="msapplication-TileColor" content={theme.colors.primary} />
     <meta name="theme-color" content={theme.colors.primary} />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    ></link>
   </Head>
 );
