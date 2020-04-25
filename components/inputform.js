@@ -15,6 +15,7 @@ export default class InputForm extends Component {
     gridAssigned: "",
     order: -1,
     gameStartedOthers: false,
+    disconnected: false,
   };
 
   componentDidMount() {
@@ -29,9 +30,6 @@ export default class InputForm extends Component {
     this.socket.on("assignedChameleon", this.handleAssignedChameleon);
     this.socket.on("resetGame", this.handleResetGameConfirmed);
     this.socket.on("disconnect", this.handleDisconnect);
-    sessionStorage.setItem("gridAssigned", "");
-    sessionStorage.setItem("order", "");
-    sessionStorage.setItem("chameleon", "false");
     console.log("getting server");
     fetch("/users")
       .then((value) => {
@@ -61,18 +59,15 @@ export default class InputForm extends Component {
       gridAssigned: "",
       order: -1,
       gameStartedOthers: false,
+      disconnected: true,
     });
   };
 
   handleAssignedChameleon = (order) => {
-    sessionStorage.setItem("chameleon", "true");
-    sessionStorage.setItem("order", order);
     this.setState({ chameleonAssigned: true, order: order });
   };
 
   handleAssignedGrid = (grid) => {
-    sessionStorage.setItem("gridAssigned", grid[0]);
-    sessionStorage.setItem("order", grid[1]);
     this.setState({ gridAssigned: grid[0], order: grid[1] });
   };
 
@@ -131,14 +126,12 @@ export default class InputForm extends Component {
   };
 
   handleResetGameConfirmed = () => {
-    sessionStorage.setItem("gridAssigned", "");
-    sessionStorage.setItem("order", "");
-    sessionStorage.setItem("chameleon", "false");
     this.setState({
       chameleonAssigned: false,
       gridAssigned: "",
       order: -1,
       gameStartedOthers: false,
+      disconnected: false,
     });
   };
 
@@ -150,9 +143,6 @@ export default class InputForm extends Component {
   };
 
   render() {
-    let gridCached = sessionStorage.getItem("gridAssigned");
-    let chameleonCached = sessionStorage.getItem("chameleon");
-    let orderCached = sessionStorage.getItem("order");
     return (
       <>
         {!(this.state.submittedUsername.length > 0) && (
@@ -272,17 +262,16 @@ export default class InputForm extends Component {
               </Box>
             </Container>
           )}
-          {chameleonCached === "true" ||
-            (gridCached && gridCached.length > 0 && (
-              <div>
-                {gridCached.length > 0 ? (
-                  <h1>{gridCached}</h1>
-                ) : (
-                  <h1> You are chameleon</h1>
+          {this.state.disconnected === "true" && (
+            <div>
+              {this.state.chameleonAssigned && <h1>You are the chameleon</h1>}
+              {this.state.gridAssigned &&
+                this.state.gridAssigned.length > 0 && (
+                  <h1>{this.state.gridAssigned}</h1>
                 )}
-                <h1>Position: {orderCached}</h1>
-              </div>
-            ))}
+              {this.state.order > 0 && <h1>Position: {this.state.order}</h1>}>
+            </div>
+          )}
         </Container>
       </>
     );
