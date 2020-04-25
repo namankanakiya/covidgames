@@ -47,7 +47,7 @@ export default class InputForm extends Component {
 
   handleDisconnect = () => {
     if (this.state.username.length > 0) {
-      this.socket.emit("user", this.state.username);
+      this.socket.emit("user", this.state.username.trim());
     }
     this.setState({
       currentUsers: [],
