@@ -135,7 +135,7 @@ export default class InputForm extends Component {
 
   isGameStarted = () => {
     return (
-      !this.state.disconnected &&
+      !this.state.disconnected === "true" &&
       (this.state.chameleonAssigned ||
         (this.state.gridAssigned && this.state.gridAssigned.length > 0))
     );
@@ -226,6 +226,7 @@ export default class InputForm extends Component {
               })}
           </Box>
           {!this.isGameStarted() &&
+            !this.state.disconnected === "true" &&
             this.state.submittedUsername &&
             this.state.submittedUsername.length > 0 && (
               <Container sx={{ my: "10px" }}>
