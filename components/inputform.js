@@ -135,8 +135,9 @@ export default class InputForm extends Component {
 
   isGameStarted = () => {
     return (
-      this.state.chameleonAssigned ||
-      (this.state.gridAssigned && this.state.gridAssigned.length > 0)
+      !this.state.disconnected &&
+      (this.state.chameleonAssigned ||
+        (this.state.gridAssigned && this.state.gridAssigned.length > 0))
     );
   };
 
