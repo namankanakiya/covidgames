@@ -14,7 +14,6 @@ export default class InputForm extends Component {
     chameleonAssigned: false,
     gridAssigned: "",
     order: -1,
-    disconnected: false,
     gameStartedOthers: false,
   };
 
@@ -47,10 +46,19 @@ export default class InputForm extends Component {
   }
 
   handleDisconnect = () => {
-    this.setState({ disconnected: true });
     if (this.state.username.length > 0) {
       this.socket.emit("user", this.state.username);
     }
+    this.setState({
+      currentUsers: [],
+      submittedUsername: "",
+      usernameRejected: false,
+      allowStartGame: false,
+      chameleonAssigned: false,
+      gridAssigned: "",
+      order: -1,
+      gameStartedOthers: false,
+    });
   };
 
   handleAssignedChameleon = (order) => {
@@ -120,7 +128,6 @@ export default class InputForm extends Component {
       chameleonAssigned: false,
       gridAssigned: "",
       order: -1,
-      disconnected: false,
       gameStartedOthers: false,
     });
   };
