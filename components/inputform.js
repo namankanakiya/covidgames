@@ -56,9 +56,6 @@ export default class InputForm extends Component {
       submittedUsername: "",
       usernameRejected: false,
       allowStartGame: false,
-      chameleonAssigned: false,
-      gridAssigned: "",
-      order: -1,
       gameStartedOthers: false,
       disconnected: "true",
     });
