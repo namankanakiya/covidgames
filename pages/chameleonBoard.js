@@ -29,11 +29,16 @@ export default class ChameleonSelect extends Component {
       name = currentSelectedVal.name;
     }
     return (
-      <Box as="header" variant="headerLeft">
+      <Box as="header" variant="headerLeftNoBackground">
         <Select
           value={this.state.selectedGame}
           onChange={this.handleChange}
           placeholder="Select Value"
+          sx={{
+            "> option": {
+              backgroundColor: "background",
+            },
+          }}
         >
           <option>Select a game</option>
           {boards.map(({ name, words }) => (
