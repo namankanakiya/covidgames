@@ -47,7 +47,8 @@ export default class ChameleonSelect extends Component {
               "> table": {
                 my: [2, 3],
                 textAlign: "center",
-                maxWidth: "400px",
+                tableLayout: "fixed",
+                wordBreak: "break-word",
               },
               th: { color: "primary", textAlign: "center" },
               td: { mx: "20px" },
