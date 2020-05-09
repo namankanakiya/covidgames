@@ -260,16 +260,6 @@ export default class InputForm extends Component {
               </Box>
             </Container>
           )}
-          {this.state.disconnected === "true" && (
-            <div>
-              {this.state.chameleonAssigned && <h1>You are the chameleon</h1>}
-              {this.state.gridAssigned &&
-                this.state.gridAssigned.length > 0 && (
-                  <h1>{this.state.gridAssigned}</h1>
-                )}
-              {this.state.order > 0 && <h1>Position: {this.state.order}</h1>}>
-            </div>
-          )}
           <ChameleonSelect />
         </Container>
       </>
