@@ -104,6 +104,8 @@ export default class InputForm extends Component {
     // create user to send to socket
     if (this.state.username && this.state.username.length > 0) {
       this.socket.emit("user", this.state.username);
+    } else {
+      this.setState({ usernameRejected: true });
     }
   };
 
@@ -177,7 +179,9 @@ export default class InputForm extends Component {
               />
               {this.state.usernameRejected && (
                 <Label sx={{ color: "red", marginTop: "-15px", mb: "15px" }}>
-                  That username is taken, please choose another
+                  {this.state.username && this.state.username.length > 0
+                    ? "That nickname is taken, please choose another"
+                    : "Pleas enter a nickname"}
                 </Label>
               )}
               <Button>Submit</Button>
