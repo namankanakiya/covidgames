@@ -1,7 +1,6 @@
 import { Component } from "react";
 import io from "socket.io-client";
-import fetch from "isomorphic-fetch";
-import { Box, Container, Heading, Label, Input, Button } from "theme-ui";
+import { Box, Container, Heading, Label, Input, Button, Flex } from "theme-ui";
 import theme from "../lib/theme";
 import ChameleonSelect from "../pages/chameleonBoard";
 
@@ -17,6 +16,8 @@ export default class InputForm extends Component {
     order: -1,
     gameStartedOthers: false,
     disconnected: "",
+    room: "",
+    submittedRoom: "",
   };
 
   componentDidMount() {
@@ -31,15 +32,6 @@ export default class InputForm extends Component {
     this.socket.on("assignedChameleon", this.handleAssignedChameleon);
     this.socket.on("resetGame", this.handleResetGameConfirmed);
     this.socket.on("disconnect", this.handleDisconnect);
-    console.log("getting server");
-    fetch("/users")
-      .then((value) => {
-        return value.json();
-      })
-      .then((data) => {
-        this.setState({ currentUsers: data });
-      })
-      .catch((err) => console.log(err));
   }
 
   componentWillUnmount() {
@@ -48,9 +40,7 @@ export default class InputForm extends Component {
   }
 
   handleDisconnect = () => {
-    if (this.state.username.length > 0) {
-      this.socket.emit("user", this.state.username.trim());
-    }
+    this.joinGame();
     this.setState({
       currentUsers: [],
       submittedUsername: "",
@@ -58,6 +48,7 @@ export default class InputForm extends Component {
       allowStartGame: false,
       gameStartedOthers: false,
       disconnected: "true",
+      submittedRoom: "",
     });
   };
 
@@ -83,7 +74,7 @@ export default class InputForm extends Component {
   };
 
   handleLeftGame = (user) => {
-    this.setState({ submittedUsername: "" });
+    this.setState({ submittedUsername: "", submittedRoom: "" });
   };
 
   handleCurrentUsers = (users) => {
@@ -91,7 +82,12 @@ export default class InputForm extends Component {
   };
 
   handleAcceptedUser = (user) => {
-    this.setState({ submittedUsername: user[0], gameStartedOthers: user[1] });
+    this.setState({
+      submittedUsername: user[0],
+      gameStartedOthers: user[1],
+      submittedRoom: this.state.room,
+      usernameRejected: false,
+    });
   };
 
   handleRejectedUser = () => {
@@ -102,15 +98,26 @@ export default class InputForm extends Component {
     event.preventDefault();
 
     // create user to send to socket
-    if (this.state.username && this.state.username.length > 0) {
-      this.socket.emit("user", this.state.username);
-    } else {
-      this.setState({ usernameRejected: true });
-    }
+    if (!this.joinGame()) this.setState({ usernameRejected: true });
   };
 
   handleChange = (event) => {
-    this.setState({ username: event.target.value, usernameRejected: false });
+    this.setState({
+      username: event.target.value && this.sanitizeString(event.target.value),
+      usernameRejected: false,
+    });
+  };
+
+  handleChangeRoom = (event) => {
+    this.setState({
+      room: event.target.value && this.sanitizeString(event.target.value),
+      usernameRejected: false,
+    });
+  };
+
+  sanitizeString = (str) => {
+    str = str.replace(/[^a-z0-9áéíóúñü]/gim, "");
+    return str.trim().toLowerCase();
   };
 
   handleLeaveGame = () => {
@@ -142,6 +149,20 @@ export default class InputForm extends Component {
     );
   };
 
+  joinGame = () => {
+    if (
+      this.state.username &&
+      this.state.username.length > 0 &&
+      this.state.room &&
+      this.state.room.length > 0
+    ) {
+      this.socket.emit("user", [this.state.username, this.state.room]);
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   render() {
     return (
       <>
@@ -167,21 +188,51 @@ export default class InputForm extends Component {
               >
                 Enter Game
               </Heading>
-              <Label htmlFor="username">Username</Label>
-              <Input
-                name="username"
-                mb={3}
-                onChange={this.handleChange}
-                value={this.state.username}
-                sx={{
-                  backgroundColor: this.state.usernameRejected ? "red" : null,
-                }}
-              />
+              <Flex sx={{ flexWrap: "wrap" }}>
+                <Box
+                  sx={{
+                    flex: "1 1 auto",
+                    paddingRight: "10px",
+                  }}
+                >
+                  <Label htmlFor="roomname">Room Name</Label>
+                  <Input
+                    name="roomname"
+                    mb={3}
+                    onChange={this.handleChangeRoom}
+                    value={this.state.room}
+                    sx={{
+                      backgroundColor: this.state.usernameRejected
+                        ? "red"
+                        : null,
+                    }}
+                  />
+                </Box>
+                <Box
+                  sx={{
+                    flex: "1 1 auto",
+                    paddingRight: "10px",
+                  }}
+                >
+                  <Label htmlFor="username">Nickname</Label>
+                  <Input
+                    name="username"
+                    mb={3}
+                    onChange={this.handleChange}
+                    value={this.state.username}
+                    sx={{
+                      backgroundColor: this.state.usernameRejected
+                        ? "red"
+                        : null,
+                    }}
+                  />
+                </Box>
+              </Flex>
               {this.state.usernameRejected && (
                 <Label sx={{ color: "red", marginTop: "-15px", mb: "15px" }}>
                   {this.state.username && this.state.username.length > 0
-                    ? "That nickname is taken, please choose another"
-                    : "Pleas enter a nickname"}
+                    ? "That nickname is taken, please choose another, or change the room."
+                    : "Please enter a nickname / roomid"}
                 </Label>
               )}
               <Button>Submit</Button>
@@ -189,18 +240,32 @@ export default class InputForm extends Component {
           </Box>
         )}
         <Container sx={{ pb: [4, null, 5] }}>
-          {((this.state.currentUsers && this.state.currentUsers.length > 0) ||
+          {((this.state.currentUsers &&
+            this.state.currentUsers.length > 0 &&
+            this.state.submittedRoom &&
+            this.state.submittedRoom.length > 0) ||
             (this.state.submittedUsername &&
               this.state.submittedUsername.length > 0)) && (
-            <Heading
-              sx={{
-                variant: "text.subheadline",
-                fontSize: [3, 4],
-                color: "secondary",
-              }}
-            >
-              Current Players
-            </Heading>
+            <div>
+              <Heading
+                sx={{
+                  variant: "text.subheadline",
+                  fontSize: [3, 4],
+                  color: "secondary",
+                }}
+              >
+                Room: {this.state.submittedRoom}
+              </Heading>
+              <Heading
+                sx={{
+                  variant: "text.subheadline",
+                  fontSize: [2, 3],
+                  color: "secondary",
+                }}
+              >
+                Current Players
+              </Heading>
+            </div>
           )}
           <Box
             as="ul"
@@ -222,6 +287,8 @@ export default class InputForm extends Component {
                 </ret>
               )}
             {this.state.currentUsers &&
+              this.state.submittedRoom &&
+              this.state.submittedRoom.length > 0 &&
               this.state.currentUsers.map((user) => {
                 return user === this.state.submittedUsername ? null : (
                   <li key={user}>{user}</li>

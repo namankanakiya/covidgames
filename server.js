@@ -18,6 +18,7 @@ const NUMBERUSERSCHAMELEON = 3;
 
 // fake DB
 var users = {};
+var roomsStarted = {};
 var letters = ["A", "B", "C", "D"];
 var numbersChameleon = ["1", "2", "3", "4"];
 var gameStarted = false;
@@ -27,94 +28,119 @@ const chameleon = io.of("/chameleon");
 chameleon.on("connection", (socket) => {
   console.log("someone connected");
   socket.on("user", (data) => {
-    console.log(data);
-    console.log(Object.values(users));
-    console.log(Object.values(users).indexOf(data) < 0);
-    if (Object.values(users).indexOf(data) < 0) {
-      users[socket.id] = data;
-      console.log(data);
-      console.log(users);
-      socket.emit("acceptedUser", [data, gameStarted]);
-      var objectVals = Object.values(users);
-      socket.emit("connectedUsers", objectVals);
-      socket.broadcast.emit("connectedUsers", objectVals);
-      if (objectVals.length >= NUMBERUSERSCHAMELEON) {
-        chameleon.emit("allowStartGame");
-        // socket.emit("allowStartGame");
-        // socket.broadcast.emit("allowStartGame");
+    username = data[0];
+    room = data[1];
+    chameleon.in(room).clients((err, clients) => {
+      let usernameConflict = false;
+      let currentlyConnectedRoomClients = [];
+      for (let clientId of clients) {
+        let clientSocket = chameleon.in(room).sockets[clientId];
+        if (clientSocket.username === username) {
+          usernameConflict = true;
+          console.log(clientSocket.username, username, room);
+        }
+        currentlyConnectedRoomClients.push(clientSocket.username);
       }
-    } else {
-      socket.emit("rejectedUser");
-    }
+      if (!usernameConflict) {
+        if (socket.room) {
+          socket.leave(socket.room);
+        }
+        socket["username"] = username;
+        socket.join(room);
+        socket["room"] = room;
+        currentlyConnectedRoomClients.push(username);
+        console.log("curr connected", currentlyConnectedRoomClients);
+        users[room] = currentlyConnectedRoomClients;
+        // TODO switch false to gamestarted
+        socket.emit("acceptedUser", [username, false]);
+        chameleon
+          .in(room)
+          .emit("connectedUsers", currentlyConnectedRoomClients);
+        if (currentlyConnectedRoomClients.length >= NUMBERUSERSCHAMELEON) {
+          chameleon.in(room).emit("allowStartGame");
+        }
+      } else {
+        console.log("Conflict");
+        socket.emit("rejectedUser");
+      }
+    });
   });
 
   socket.on("leaveGame", (data) => {
     console.log("leaving game", data);
     try {
-      delete users[socket.id];
-      console.log(users);
-      socket.emit("leftGame", data);
-      var objectVals = Object.values(users);
-      chameleon.emit("connectedUsers", objectVals);
-      // socket.emit("connectedUsers", objectVals);
-      // socket.broadcast.emit("connectedUsers", objectVals);
-      if (objectVals.length < NUMBERUSERSCHAMELEON) {
-        chameleon.emit("denyStartGame");
-        // socket.emit("denyStartGame");
-        // socket.broadcast.emit("denyStartGame");
+      roomUsers = users[socket.room];
+      roomUsers =
+        roomUsers &&
+        roomUsers.filter(function (val) {
+          return val !== socket.username;
+        });
+      console.log(roomUsers);
+      socket.emit("leftGame", socket.username);
+      users[socket.room] = roomUsers;
+      chameleon.in(socket.room).emit("connectedUsers", roomUsers);
+      if (roomUsers && roomUsers.length < NUMBERUSERSCHAMELEON) {
+        chameleon.in(socket.room).emit("denyStartGame");
       }
+      delete socket.username;
+      socket.leave(socket.room);
+      delete socket.room;
     } catch (ex) {
       console.log(ex);
     }
   });
 
   socket.on("startGame", () => {
-    var socketIds = Object.keys(users);
-    shuffle(socketIds);
-    var chosenChamaleonSocket =
-      socketIds[(socketIds.length * Math.random()) << 0];
-    var randomLetter = letters[(letters.length * Math.random()) << 0];
-    var randomNumber =
-      numbersChameleon[(numbersChameleon.length * Math.random()) << 0];
-    var randomGrid = randomLetter + randomNumber;
-    var chameleonIndex = 0;
-    socketIds.forEach((socketId, index) => {
-      if (socketId !== chosenChamaleonSocket) {
-        chameleon.to(socketId).emit("assignedGrid", [randomGrid, index + 1]);
-      } else {
-        chameleonIndex = index;
-      }
+    chameleon.in(socket.room).clients((err, clients) => {
+      var socketIds = clients;
+      shuffle(socketIds);
+      var chosenChamaleonSocket =
+        socketIds[(socketIds.length * Math.random()) << 0];
+      var randomLetter = letters[(letters.length * Math.random()) << 0];
+      var randomNumber =
+        numbersChameleon[(numbersChameleon.length * Math.random()) << 0];
+      var randomGrid = randomLetter + randomNumber;
+      var chameleonIndex = 0;
+      socketIds.forEach((socketId, index) => {
+        if (socketId !== chosenChamaleonSocket) {
+          chameleon.to(socketId).emit("assignedGrid", [randomGrid, index + 1]);
+        } else {
+          chameleonIndex = index;
+        }
+      });
+      chameleon
+        .to(chosenChamaleonSocket)
+        .emit("assignedChameleon", chameleonIndex + 1);
+      roomsStarted[socket.room] = true;
     });
-    chameleon
-      .to(chosenChamaleonSocket)
-      .emit("assignedChameleon", chameleonIndex + 1);
-    gameStarted = true;
   });
 
   socket.on("resetGame", () => {
-    gameStarted = false;
-    chameleon.emit("resetGame");
+    roomsStarted[socket.room] = false;
+    chameleon.in(socket.room).emit("resetGame");
   });
 
   socket.on("disconnect", function () {
-    delete users[socket.id];
-    var objectVals = Object.values(users);
-    socket.broadcast.emit("connectedUsers", objectVals);
-    if (objectVals.length < NUMBERUSERSCHAMELEON) {
+    roomUsers = users[socket.room];
+    roomUsers =
+      roomUsers &&
+      roomUsers.filter(function (val) {
+        return val !== socket.username;
+      });
+    console.log(roomUsers);
+    chameleon.in(socket.room).emit("connectedUsers", roomUsers);
+    if (roomUsers && roomUsers.length < NUMBERUSERSCHAMELEON) {
       gameStarted = false;
       console.log("game not started");
-      socket.broadcast.emit("denyStartGame");
+      chameleon.in(socket.room).emit("denyStartGame");
     }
-    console.log(Object.values(users));
+    delete socket.username;
+    socket.leave(socket.room);
+    delete socket.room;
   });
 });
 
 nextApp.prepare().then(() => {
-  app.get("/users", (req, res) => {
-    console.log("got request");
-    res.json(Object.values(users));
-  });
-
   app.get("*", (req, res) => {
     return nextHandler(req, res);
   });
