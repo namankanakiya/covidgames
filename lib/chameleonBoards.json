@@ -292,5 +292,89 @@
       "Yeti",
       "Centaur"
     ]
+  },
+  {
+    "name": "Cartoon Animals",
+    "words": [
+      "Garfield",
+      "Mickey Mouse",
+      "Nemo",
+      "Dumbo",
+      "Scooby Doo",
+      "Goofy",
+      "Tony the Tiger",
+      "Wile E. Coyote",
+      "Yogey Bear",
+      "Winnie the Poo",
+      "Snoopy",
+      "Simba",
+      "Bugs Bunny",
+      "Kung Fu Panda",
+      "Bambi",
+      "Sonic the Hedgehog"
+    ]
+  },
+  {
+    "name": "Animals",
+    "words": [
+      "Cat",
+      "Dog",
+      "Rabbit",
+      "Pig",
+      "Squirrel",
+      "Tiger",
+      "Lion",
+      "Snake",
+      "Parrot",
+      "Zebra",
+      "Mockingjay",
+      "Elephant",
+      "Alligator",
+      "Rhino",
+      "Falcon",
+      "Mouse"
+    ]
+  },
+  {
+    "name": "Phobias",
+    "words": [
+      "Ghosts",
+      "Spiders",
+      "Height",
+      "Needles",
+      "Children",
+      "Snakes",
+      "Dogs",
+      "Shadows",
+      "Monsters",
+      "Germs",
+      "Birds",
+      "Roller Coasters",
+      "Rats",
+      "Clowns",
+      "Insects",
+      "Planes"
+    ]
+  },
+  {
+    "name": "TV Shows",
+    "words": [
+      "Friends",
+      "Breaking Bad",
+      "The Good Place",
+      "Mad Men",
+      "Sex and the City",
+      "The Patriot Act",
+      "X-Files",
+      "The Office",
+      "South Park",
+      "Star Trek",
+      "Scrubs",
+      "Money Heist",
+      "The Walking Dead",
+      "Game of Thrones",
+      "Seinfeld",
+      "The Mandalorian"
+    ]
   }
 ]
