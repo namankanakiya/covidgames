@@ -3,9 +3,9 @@ import theme from "../lib/theme";
 
 export default ({
   title = "COVID-19 Games",
-  description = "The Games which I've had time to develop during COVID",
-  image = "http://localhost:3000/",
-  url = "http://localhost:3000/",
+  description = "The Games which I've had time to develop during COVID. Naman Kanakiya. Chameleon",
+  image = "/card.png",
+  url = "/",
 }) => (
   <Head>
     <title>{title}</title>
@@ -13,7 +13,7 @@ export default ({
     <meta name="twitter:title" content={title} />
     <meta name="og:url" content={url} />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="COVID-19 Global Hackathon" />
+    <meta property="og:site_name" content="COVID-19 Games" />
     <meta name="description" content={description} />
     <meta property="og:description" content={description} />
     <meta name="twitter:description" content={description} />
