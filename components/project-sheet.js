@@ -6,7 +6,7 @@ export default ({ actions }) => {
   const video = "https://youtu.be/Tgn2W4KIanY?t=12";
   const name = "Instructions";
   const HeadingWrapper = Box;
-  const imageBase = "http://localhost:3000/images/";
+  const imageBase = "images/";
   return (
     <Box
       as="article"
