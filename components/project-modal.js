@@ -1,12 +1,12 @@
-import theme from '../lib/theme'
-import { IconButton } from 'theme-ui'
-import { XCircle } from 'react-feather'
-import dynamic from 'next/dynamic'
-import Modal from 'react-modal'
+import theme from "../lib/theme";
+import { IconButton } from "theme-ui";
+import { XCircle } from "react-feather";
+import dynamic from "next/dynamic";
+import Modal from "react-modal";
 
-Modal.setAppElement('#__next')
+Modal.setAppElement("#__next");
 
-const ProjectSheet = dynamic(() => import('./project-sheet'))
+const ProjectSheet = dynamic(() => import("./project-sheet"));
 
 export default ({ open, onClose, ...props }) => [
   <Modal
@@ -19,8 +19,6 @@ export default ({ open, onClose, ...props }) => [
     shouldFocusAfterRender
   >
     <ProjectSheet
-      {...props}
-      inModal
       actions={
         <IconButton title="Close modal" onClick={onClose}>
           <XCircle size={34} />
@@ -80,5 +78,5 @@ export default ({ open, onClose, ...props }) => [
         animation: none !important;
       }
     }
-  `}</style>
-]
+  `}</style>,
+];
