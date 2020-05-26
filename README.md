@@ -1,7 +1,7 @@
-# COVID-19 Global Hackathon
+# COVID-19 Games
 
-Made by [@lachlanjc](https://lachlanjc.me).
+Made by Naman Kanakiya.
 
-[**covidglobalhackathon.com**](https://covidglobalhackathon.com)
+[**https://covid-games.herokuapp.com/**](https://covid-games.herokuapp.com/)
 
 MIT License
