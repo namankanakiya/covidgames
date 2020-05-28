@@ -40,7 +40,7 @@ export default class ChameleonSelect extends Component {
             },
           }}
         >
-          <option>Select a game</option>
+          <option>Select a Chameleon Board</option>
           {boards.map(({ name, words }) => (
             <option>{name}</option>
           ))}

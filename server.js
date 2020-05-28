@@ -1,4 +1,6 @@
 const app = require("express")();
+const helmet = require("helmet");
+app.use(helmet());
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === "production") {
     if (req.headers["x-forwarded-proto"] !== "https")
