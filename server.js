@@ -2,18 +2,18 @@ const app = require("express")();
 const helmet = require("helmet");
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === "production") {
+    app.use(
+      helmet({
+        hsts: {
+          includeSubDomains: true,
+          preload: true,
+          maxAge: 31536000,
+        },
+      })
+    );
     if (req.headers["x-forwarded-proto"] !== "https")
       return res.redirect("https://" + req.headers.host + req.url);
     else {
-      app.use(
-        helmet({
-          hsts: {
-            includeSubDomains: true,
-            preload: true,
-            maxAge: 31536000,
-          },
-        })
-      );
       return next();
     }
   } else return next();
