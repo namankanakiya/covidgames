@@ -2,7 +2,7 @@ import { Box, Container, Link, NavLink } from "theme-ui";
 import { useState } from "react";
 
 import ProjectModal from "../components/project-modal";
-import InputForm from "../components/inputform";
+import ChameleonContainer from "../components/ChameleonContainer";
 
 export default ({}) => {
   const [open, setOpen] = useState(false);
@@ -41,7 +41,7 @@ export default ({}) => {
       {open && (
         <ProjectModal open={open} onClose={closeModal} name="someName" />
       )}
-      <InputForm namespace="/chameleon" />
+      <ChameleonContainer />
     </>
   );
 };

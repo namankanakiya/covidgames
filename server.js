@@ -63,8 +63,7 @@ chameleon.on("connection", (socket) => {
         currentlyConnectedRoomClients.push(username);
         console.log("curr connected", currentlyConnectedRoomClients);
         users[room] = currentlyConnectedRoomClients;
-        // TODO switch false to gamestarted
-        socket.emit("acceptedUser", [username, false]);
+        socket.emit("acceptedUser", [username, roomsStarted[socket.room]]);
         chameleon
           .in(room)
           .emit("connectedUsers", currentlyConnectedRoomClients);

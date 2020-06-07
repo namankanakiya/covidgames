@@ -40,9 +40,9 @@ export default class ChameleonSelect extends Component {
             },
           }}
         >
-          <option>Select a Chameleon Board</option>
+          <option key="SelectBoard">Select a Chameleon Board</option>
           {boards.map(({ name, words }) => (
-            <option>{name}</option>
+            <option key={words}>{name}</option>
           ))}
         </Select>
 
@@ -60,41 +60,43 @@ export default class ChameleonSelect extends Component {
           >
             <h1>{name}</h1>
             <table className="table table-responsive-xl">
-              <tr>
-                <th></th>
-                <th>A</th>
-                <th>B</th>
-                <th>C</th>
-                <th>D</th>
-              </tr>
-              <tr>
-                <th>1</th>
-                <td>{words[0]}</td>
-                <td>{words[1]}</td>
-                <td>{words[2]}</td>
-                <td>{words[3]}</td>
-              </tr>
-              <tr>
-                <th>2</th>
-                <td>{words[4]}</td>
-                <td>{words[5]}</td>
-                <td>{words[6]}</td>
-                <td>{words[7]}</td>
-              </tr>
-              <tr>
-                <th>3</th>
-                <td>{words[8]}</td>
-                <td>{words[9]}</td>
-                <td>{words[10]}</td>
-                <td>{words[11]}</td>
-              </tr>
-              <tr>
-                <th>4</th>
-                <td>{words[12]}</td>
-                <td>{words[13]}</td>
-                <td>{words[14]}</td>
-                <td>{words[15]}</td>
-              </tr>
+              <tbody>
+                <tr>
+                  <th></th>
+                  <th>A</th>
+                  <th>B</th>
+                  <th>C</th>
+                  <th>D</th>
+                </tr>
+                <tr>
+                  <th>1</th>
+                  <td>{words[0]}</td>
+                  <td>{words[1]}</td>
+                  <td>{words[2]}</td>
+                  <td>{words[3]}</td>
+                </tr>
+                <tr>
+                  <th>2</th>
+                  <td>{words[4]}</td>
+                  <td>{words[5]}</td>
+                  <td>{words[6]}</td>
+                  <td>{words[7]}</td>
+                </tr>
+                <tr>
+                  <th>3</th>
+                  <td>{words[8]}</td>
+                  <td>{words[9]}</td>
+                  <td>{words[10]}</td>
+                  <td>{words[11]}</td>
+                </tr>
+                <tr>
+                  <th>4</th>
+                  <td>{words[12]}</td>
+                  <td>{words[13]}</td>
+                  <td>{words[14]}</td>
+                  <td>{words[15]}</td>
+                </tr>
+              </tbody>
             </table>
           </Container>
         )}
