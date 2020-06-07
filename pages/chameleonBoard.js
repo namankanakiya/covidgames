@@ -14,14 +14,12 @@ export default class ChameleonSelect extends Component {
   render() {
     let currentSelectedVal = undefined;
     if (this.state.selectedGame && this.state.selectedGame.length > 0) {
-      console.log(boards);
       currentSelectedVal = boards.find((value) => {
         if (this.state.selectedGame === value.name) {
           return true;
         }
       });
     }
-    console.log(currentSelectedVal);
     let words;
     let name;
     if (currentSelectedVal) {
